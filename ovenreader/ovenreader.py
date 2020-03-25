@@ -3,6 +3,7 @@ import os
 from textwrap import dedent as dd
 from datetime import datetime as dt
 
+
 # TODO encapsulate data into Cook() object.
 class OvenReader(object):
     """Parse and output raw cook data.
