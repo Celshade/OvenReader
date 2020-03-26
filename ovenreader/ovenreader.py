@@ -97,7 +97,8 @@ class OvenReader(object):
         {header.center(80)}
         {wrap}""")
 
-    def output(self, cook: Cook, comments: bool=False, errors: bool=False) -> None:
+    def output(self, cook: Cook,
+               comments: bool=False, errors: bool=False) -> None:
         """Return a formatted output of data points.
 
         Args:
