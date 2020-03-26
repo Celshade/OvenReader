@@ -17,7 +17,9 @@ class Cook(object):
         OVEN (str): Oven ID.
         PROGRAM (str): Program name.
         START_TIME (str): Cook start time.
+        START_TEMP (tuple[float]): Starting temperatures.
         END_TIME (str): Cook end time.
+        END_TEMP (tuple[float]): Ending temperatures.
         STAGES (dict): Stage information.
         COMMENTS (list): Cook comments.
         ERRORS (list): Cook errors.
@@ -38,7 +40,7 @@ class Cook(object):
         self.STAGES = data["stages"]
         # TODO self.COMMENTS = data["comments"]
         # TODO self.ERRORS = data["errors"]
-        # TODO self.COOK_YIELD = self.OUT_WEIGHT / self.IN_WEIGHT
+        self.COOK_YIELD = self.OUT_WEIGHT / self.IN_WEIGHT
         self.DURATION = int(sum(self.STAGES.values()))
 
 

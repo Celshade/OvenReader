@@ -23,15 +23,14 @@ class OvenReader(object):
     def parse(self, path: str) -> Cook:
         """Parse the file and return a Cook object.
 
+        Parse critical data points from the raw data and consolidate them into
+        a Cook object.
+
         Args:
-            path: The file path for the data.
+            path: The path to the data.
         """
 
-        # TODO Finish implementation
-        # Attribute configuration for Cook()
-        config = {
-            "end_time": None
-        }
+        config = {}  # Cook attribute configuration
         # Obtain file name, product ID, and lot number
         file_name = path[path.rfind('\\') + 1:].strip()
         config["fname"] = file_name
@@ -40,42 +39,46 @@ class OvenReader(object):
         # Parse the file
         with open(path, 'r') as f:
             text = f.readlines()
-            # Isolate the header, containing program & start time
-            header = text[1].split(',')
+            # Obtain program, start time, and oven number
+            header = text[1].split(',')  # Isolate the report header
             config["program"] = header[1]
             start_info = header[3].replace('/', '-').strip()
             config["start_time"] = dt.strptime(start_info, "%m-%d-%Y %H:%M:%S")
-            # Obtain oven number
             config["oven"] = text[2].split(',')[1][5:].strip()
 
-            # Iterate through file data and calculate stage durations
-            counter = dt.strptime("00:00", "%H:%M")
-            curr_stage = 1
+            # Iterate through file data
+            counter = dt.strptime("00:00", "%H:%M")  # Time counter
+            curr_stage = 1  # Stage counter
             stages = {}  # Stages to be added to config, once complete
             for line in text:
                 if line.strip().endswith(",,"):  # Targets cook data
                     this_line = line.split(',')
 
+                    # Obtain starting temperatures
                     if this_line[2] == "START":
                         # TODO Parse starting temperatures
                         continue
+                    # Obtain end time and temperatures
                     elif this_line[2] == "END":
                         # TODO Parse end time
+                        config["end_time"] = "NotYetImplemented"
                         # TODO Parse final temperatures
                         continue
                     elif int(this_line[2]) > curr_stage:
-                        # Update (*maintain sequence)
                         clock = dt.strptime(this_line[0], "%H:%M")
                         time = (clock - counter).total_seconds() / 60
                         stages[f"Stage {curr_stage}"] = time
                         counter = clock
                         curr_stage += 1
+
+                # Obtain in and out weights
                 elif line.startswith("In-weight:"):
                     config["in_weight"] = int(line[line.index(': ') + 1:])
                 elif line.startswith("Out-weight:"):
                     config["out_weight"] = int(line[line.index(': ') + 1:])
                 else:
-                    config["in_weight"], config["out_weight"] = None, None
+                    config["in_weight"], config["out_weight"] = 1, -1
+            # Obtain stage data
             config["stages"] = stages
         return Cook(config)
 
@@ -95,10 +98,10 @@ class OvenReader(object):
             header: The header to wrap.
             border: The border symbol to wrap the header with.
         """
-        wrap = border * 80
+        wrap = border * 79
         return dd(f"""
         {wrap}
-        {header.center(80)}
+        {header.center(79)}
         {wrap}""")
 
     def output(self, cook: Cook,
@@ -109,7 +112,6 @@ class OvenReader(object):
             comments: Flag to control the output of comments (default=False).
             errors: Flat to control the output of errors (default=False).
         """
-        # TODO Fix yield
         # TODO Add flags to output comments | errors
         # Output cook data
         print(f"\nFile: {cook.NAME}", end='')  # TODO Remove??
