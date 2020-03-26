@@ -1,46 +1,45 @@
-# TODO implement
 class Cook(object):
     """Maintain parsed cook data.
 
     This object is intended to be used in conjunction with OvenReader() and
-    maintains unique cook data. Attributes are specified in a pre-configured
-    dict.
+    maintains unique cook data. Main attributes are specified in a
+    pre-configured dict.
 
     Args:
         data: Configruation of attributes.
 
     Attributes:
-        file_name (str): File name for the cook.
-        product (str): Product ID.
-        lot (str): Product lot number.
-        in_weight (int): Product in-weight.
-        out_weight (int): Product out-weight.
-        oven_yield (float): Product yield.
-        oven (str): Oven ID.
-        program (str): Program name.
-        start_time (str): Cook start time.
-        end_time (str): Cook end time.
-        duration (str): Total duration of cook.
-        stages (dict): Stage information.
-        comments (list): Cook comments.
-        errors (list): Cook errors.
+        NAME (str): File name OF the cook.
+        PRODUCT (str): Product ID.
+        LOT (str): Product lot number.
+        IN_WEIGHT (int): Product in-weight.
+        OUT_WEIGHT (int): Product out-weight.
+        OVEN (str): Oven ID.
+        PROGRAM (str): Program name.
+        START_TIME (str): Cook start time.
+        END_TIME (str): Cook end time.
+        STAGES (dict): Stage information.
+        COMMENTS (list): Cook comments.
+        ERRORS (list): Cook errors.
+        OVEN_YIELD (float): Product yield.
+        DURATION (str): Total duration of cook.
     """
 
     def __init__(self, data: dict) -> None:
-        self.file_name = data["fname"]
-        self.product = data["product"]
-        self.lot = data["lot"]
-        self.in_weight = data["in_weight"]
-        self.out_weight = data["out_weight"]
-        self.cook_yield = data["yield"]
-        self.oven = data["oven"]
-        self.program = data["program"]
-        self.start_time = data["start_time"]
-        self.end_time = data["end_time"]
-        self.duration = data["duration"]
-        self.stages = data["stages"]
-        self.comments = data["comments"]
-        self.errors = data["errors"]
+        self.NAME = data["fname"]
+        self.PRODUCT = data["product"]
+        self.LOT = data["lot"]
+        self.IN_WEIGHT = data["in_weight"]
+        self.OUT_WEIGHT = data["out_weight"]
+        self.OVEN = data["oven"]
+        self.PROGRAM = data["program"]
+        self.START_TIME = data["start_time"]
+        self.END_TIME = data["end_time"]
+        self.STAGES = data["stages"]
+        # TODO self.COMMENTS = data["comments"]
+        # TODO self.ERRORS = data["errors"]
+        # TODO self.COOK_YIELD = self.OUT_WEIGHT / self.IN_WEIGHT
+        self.DURATION = int(sum(self.STAGES.values()))
 
 
 if __name__ == "__main__":
@@ -63,6 +62,9 @@ if __name__ == "__main__":
     }
     try:
         test = Cook(TEST_CONFIG)
+        print("\n***[TESTING]***")
+        print("\nSuccessful instantiation\n")
+        print("-" * 42)
     except KeyError:
         print("\nConfiguration failed...")
         print("Deleting object...")
