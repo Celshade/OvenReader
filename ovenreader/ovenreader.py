@@ -1,4 +1,4 @@
-"""Establish a parser to read oven data from a .txt file."""
+"""Read oven data from a .txt file and output critical data points."""
 import os
 from datetime import datetime as dt
 from textwrap import dedent as dd
@@ -24,21 +24,20 @@ class OvenReader(object):
         """Parse the file and return a Cook object.
 
         Args:
-            path: The file path
+            path: The file path for the data.
         """
 
         # TODO Finish implementation
         # Attribute configuration for Cook()
         config = {
-            "product": None,
-            "lot": None,
-            "in_weight": None,
-            "out_weight": None,
             "end_time": None
         }
-        # Obtain file name
-        config["fname"] = path[path.rfind('\\') + 1:].strip()
+        # Obtain file name, product ID, and lot number
+        file_name = path[path.rfind('\\') + 1:].strip()
+        config["fname"] = file_name
+        config["product"], config["lot"] = file_name.split('_')
 
+        # Parse the file
         with open(path, 'r') as f:
             text = f.readlines()
             # Isolate the header, containing program & start time
@@ -71,7 +70,12 @@ class OvenReader(object):
                         stages[f"Stage {curr_stage}"] = time
                         counter = clock
                         curr_stage += 1
-                # TODO parse product and lot info
+                elif line.startswith("In-weight:"):
+                    config["in_weight"] = int(line[line.index(': ') + 1:])
+                elif line.startswith("Out-weight:"):
+                    config["out_weight"] = int(line[line.index(': ') + 1:])
+                else:
+                    config["in_weight"], config["out_weight"] = None, None
             config["stages"] = stages
         return Cook(config)
 
