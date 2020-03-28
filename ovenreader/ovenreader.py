@@ -55,6 +55,7 @@ class OvenReader(object):
                     this_line = line.split(',')
 
                     # Obtain starting temperatures
+                    # TODO consolidate temperature lookups into function
                     if this_line[2] == "START":
                         chars = ('D', '', '\n')
                         temps = [i for i in this_line[8:] if i not in chars]
@@ -74,6 +75,7 @@ class OvenReader(object):
                         curr_stage += 1
 
                 # Obtain in and out weights
+                # TODO consolidate weight lookups into a function
                 elif line.startswith("In-weight:"):
                     config["in_weight"] = int(line[line.index(': ') + 1:])
                 elif line.startswith("Out-weight:"):
