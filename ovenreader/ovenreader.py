@@ -51,13 +51,14 @@ class OvenReader(object):
             curr_stage = 1  # Stage counter
             stages = {}  # Stages to be added to config, once complete
             for line in text:
-                if line.strip().endswith(",,"):  # Targets cook data
+                if line.strip().endswith(",,"):  # Target cook data
                     this_line = line.split(',')
 
                     # Obtain starting temperatures
                     if this_line[2] == "START":
-                        # TODO Parse starting temperatures
-                        continue
+                        chars = ('D', '', '\n')
+                        temps = [i for i in this_line[8:] if i not in chars]
+                        config["start_temps"] = temps
                     # Obtain end time and temperatures
                     elif this_line[2] == "END":
                         # TODO Parse end time
@@ -125,6 +126,7 @@ class OvenReader(object):
         Yield: NotYetImplemented
         Program {cook.PROGRAM}
         Start: {cook.START_TIME}
+        Starting Temps: {cook.START_TEMPS}
         End: {cook.END_TIME}
         Duration: {cook.DURATION} minutes [{self._to_hours(cook.DURATION)}] \
         """), end='')

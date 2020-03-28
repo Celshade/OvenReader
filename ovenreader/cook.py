@@ -17,7 +17,7 @@ class Cook(object):
         OVEN (str): Oven ID.
         PROGRAM (str): Program name.
         START_TIME (str): Cook start time.
-        START_TEMP (tuple[float]): Starting temperatures.
+        START_TEMPS (tuple[float]): Starting temperatures.
         END_TIME (str): Cook end time.
         END_TEMP (tuple[float]): Ending temperatures.
         STAGES (dict): Stage information.
@@ -36,6 +36,7 @@ class Cook(object):
         self.OVEN = data["oven"]
         self.PROGRAM = data["program"]
         self.START_TIME = data["start_time"]
+        self.START_TEMPS = data["start_temps"]
         self.END_TIME = data["end_time"]
         self.STAGES = data["stages"]
         # TODO self.COMMENTS = data["comments"]
