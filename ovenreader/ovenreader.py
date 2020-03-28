@@ -61,10 +61,11 @@ class OvenReader(object):
                         config["start_temps"] = temps
                     # Obtain end time and temperatures
                     elif this_line[2] == "END":
-                        # TODO Parse end time
+                        chars = ('D', '', '\n')
+                        temps = [i for i in this_line[8:] if i not in chars]
+                        config["end_temps"] = temps
+                        # TODO Obtain end time
                         config["end_time"] = "NotYetImplemented"
-                        # TODO Parse final temperatures
-                        continue
                     elif int(this_line[2]) > curr_stage:
                         clock = dt.strptime(this_line[0], "%H:%M")
                         time = (clock - counter).total_seconds() / 60
@@ -128,6 +129,7 @@ class OvenReader(object):
         Start: {cook.START_TIME}
         Starting Temps: {cook.START_TEMPS}
         End: {cook.END_TIME}
+        Ending Temps: {cook.END_TEMPS}
         Duration: {cook.DURATION} minutes [{self._to_hours(cook.DURATION)}] \
         """), end='')
 

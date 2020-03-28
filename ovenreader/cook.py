@@ -19,7 +19,7 @@ class Cook(object):
         START_TIME (str): Cook start time.
         START_TEMPS (tuple[float]): Starting temperatures.
         END_TIME (str): Cook end time.
-        END_TEMP (tuple[float]): Ending temperatures.
+        END_TEMPS (tuple[float]): Ending temperatures.
         STAGES (dict): Stage information.
         COMMENTS (list): Cook comments.
         ERRORS (list): Cook errors.
@@ -38,6 +38,7 @@ class Cook(object):
         self.START_TIME = data["start_time"]
         self.START_TEMPS = data["start_temps"]
         self.END_TIME = data["end_time"]
+        self.END_TEMPS = data["end_temps"]
         self.STAGES = data["stages"]
         # TODO self.COMMENTS = data["comments"]
         # TODO self.ERRORS = data["errors"]
