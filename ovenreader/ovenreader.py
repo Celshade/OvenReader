@@ -20,6 +20,42 @@ class OvenReader(object):
     def __init__(self) -> None:
         self._current_cook = None
 
+    def _get_temps(self, text: str) -> list:
+        """Return a list of strings containing relevant temperatures.
+
+        Iterate over a string and ignore invalid characters.
+
+        Args:
+            text: The text to parse.
+        """
+
+        chars = ('D', '', '\n')
+        temps = [i for i in text[8:] if i not in chars]
+
+        return temps
+
+    def _to_hours(self, raw_minutes: int) -> str:
+        """Return a string representation of hours and minutes.
+
+        Args:
+            raw_minutes: The number of minutes to represent.
+        """
+        hours, minutes = int(raw_minutes // 60), int(raw_minutes % 60)
+        return f"{hours} hr {minutes} min"
+
+    def _wrapper(self, header: str, border: str) -> str:
+        """Return a centered header, wrapped with a border.
+
+        Args:
+            header: The header to wrap.
+            border: The border symbol to wrap the header with.
+        """
+        wrap = border * 79
+        return dd(f"""
+        {wrap}
+        {header.center(79)}
+        {wrap}""")
+
     def parse(self, path: str) -> Cook:
         """Parse the file and return a Cook object.
 
@@ -50,25 +86,19 @@ class OvenReader(object):
             counter = dt.strptime("00:00", "%H:%M")  # Time counter
             curr_stage = 1  # Stage counter
             stages = {}  # Stages to be added to config, once complete
-            for line in text:
-                if line.strip().endswith(",,"):  # Target cook data
-                    this_line = line.split(',')
+            for this_line in text:
+                if this_line.strip().endswith(",,"):  # Target cook data
+                    line = this_line.split(',')
 
                     # Obtain starting temperatures
-                    # TODO consolidate temperature lookups into function
-                    if this_line[2] == "START":
-                        chars = ('D', '', '\n')
-                        temps = [i for i in this_line[8:] if i not in chars]
-                        config["start_temps"] = temps
+                    if line[2] == "START":
+                        config["start_temps"] = self._get_temps(line)
                     # Obtain end time and temperatures
-                    elif this_line[2] == "END":
-                        chars = ('D', '', '\n')
-                        temps = [i for i in this_line[8:] if i not in chars]
-                        config["end_temps"] = temps
-                        # TODO Obtain end time
+                    elif line[2] == "END":
+                        config["end_temps"] = self._get_temps(line)
                         config["end_time"] = "NotYetImplemented"
-                    elif int(this_line[2]) > curr_stage:
-                        clock = dt.strptime(this_line[0], "%H:%M")
+                    elif int(line[2]) > curr_stage:
+                        clock = dt.strptime(line[0], "%H:%M")
                         time = (clock - counter).total_seconds() / 60
                         stages[f"Stage {curr_stage}"] = time
                         counter = clock
@@ -76,37 +106,15 @@ class OvenReader(object):
 
                 # Obtain in and out weights
                 # TODO consolidate weight lookups into a function
-                elif line.startswith("In-weight:"):
+                elif this_line.startswith("In-weight:"):
                     config["in_weight"] = int(line[line.index(': ') + 1:])
-                elif line.startswith("Out-weight:"):
+                elif this_line.startswith("Out-weight:"):
                     config["out_weight"] = int(line[line.index(': ') + 1:])
                 else:
                     config["in_weight"], config["out_weight"] = 1, -1
             # Obtain stage data
             config["stages"] = stages
         return Cook(config)
-
-    def _to_hours(self, raw_minutes: int) -> str:
-        """Return a string representation of hours and minutes.
-
-        Args:
-            raw_minutes: The number of minutes to represent.
-        """
-        hours, minutes = int(raw_minutes // 60), int(raw_minutes % 60)
-        return f"{hours} hr {minutes} min"
-
-    def _wrapper(self, header: str, border: str) -> str:
-        """Return a centered header, wrapped with a border.
-
-        Args:
-            header: The header to wrap.
-            border: The border symbol to wrap the header with.
-        """
-        wrap = border * 79
-        return dd(f"""
-        {wrap}
-        {header.center(79)}
-        {wrap}""")
 
     def output(self, cook: Cook,
                comments: bool=False, errors: bool=False) -> None:
