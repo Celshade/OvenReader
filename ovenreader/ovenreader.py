@@ -50,27 +50,14 @@ class OvenReader(object):
         hours, minutes = int(raw_minutes // 60), int(raw_minutes % 60)
         return f"{hours} hr {minutes} min"
 
-    def _wrapper(self, header: str, border: str) -> str:
-        """Return a centered header, wrapped with a border.
-
-        Args:
-            header: The header to wrap.
-            border: The border symbol to wrap the header with.
-        """
-        wrap = border * 79
-        return dd(f"""
-        {wrap}
-        {header.center(79)}
-        {wrap}""")
-
     def parse(self, path: str) -> Cook:
-        """Parse the file and return a Cook object.
+        """Parse the file and return a configured Cook object.
 
-        Parse critical data points from the raw data and consolidate them into
+        Parse critical data points from the raw text and encapsulate them into
         a Cook object.
 
         Args:
-            path: The path to the data.
+            path: The text's filepath.
         """
         config = {}  # Cook attribute configuration
         # Obtain file name, product ID, and lot number.
@@ -87,7 +74,6 @@ class OvenReader(object):
             start_info = header[3].replace('/', '-').strip()
             config["start_time"] = dt.strptime(start_info, "%m-%d-%Y %H:%M:%S")
             config["oven"] = text[2].split(',')[1][5:].strip()
-
             # Iterate through file data.
             counter = dt.strptime("00:00", "%H:%M")
             curr_stage = 1
@@ -120,6 +106,19 @@ class OvenReader(object):
             # Obtain stage data.
             config["stages"] = stages
         return Cook(config)
+
+    def _wrapper(self, header: str, border: str) -> str:
+        """Return a centered header, wrapped with a border.
+
+        Args:
+            header: The header to wrap.
+            border: The border symbol to wrap the header with.
+        """
+        wrap = border * 79
+        return dd(f"""
+        {wrap}
+        {header.center(79)}
+        {wrap}""")
 
     def output(self, cook: Cook,
                comments: bool=False, errors: bool=False) -> None:
