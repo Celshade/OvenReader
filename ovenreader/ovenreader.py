@@ -28,11 +28,18 @@ class OvenReader(object):
         Args:
             text: The text to parse.
         """
-
         chars = ('D', '', '\n')
         temps = [i for i in text[8:] if i not in chars]
 
         return temps
+
+    def _get_weight(self, text: str) -> int:
+        """Return the weight found within the given line of text.
+
+        Args:
+            text: The string to iterate over and parse from.
+        """
+        return int(text[text.index(': ') + 1:])
 
     def _to_hours(self, raw_minutes: int) -> str:
         """Return a string representation of hours and minutes.
@@ -65,35 +72,34 @@ class OvenReader(object):
         Args:
             path: The path to the data.
         """
-
         config = {}  # Cook attribute configuration
-        # Obtain file name, product ID, and lot number
+        # Obtain file name, product ID, and lot number.
         file_name = path[path.rfind('\\') + 1:].strip()
         config["fname"] = file_name
-        config["product"], config["lot"] = file_name.split('_')
+        config["product"], config["lot"] = file_name.strip(".txt").split('_')
 
-        # Parse the file
+        # Parse the file.
         with open(path, 'r') as f:
             text = f.readlines()
-            # Obtain program, start time, and oven number
-            header = text[1].split(',')  # Isolate the report header
+            # Obtain program, start time, and oven number.
+            header = text[1].split(',')  # Isolate the report header.
             config["program"] = header[1]
             start_info = header[3].replace('/', '-').strip()
             config["start_time"] = dt.strptime(start_info, "%m-%d-%Y %H:%M:%S")
             config["oven"] = text[2].split(',')[1][5:].strip()
 
-            # Iterate through file data
-            counter = dt.strptime("00:00", "%H:%M")  # Time counter
-            curr_stage = 1  # Stage counter
-            stages = {}  # Stages to be added to config, once complete
+            # Iterate through file data.
+            counter = dt.strptime("00:00", "%H:%M")
+            curr_stage = 1
+            stages = {}  # Stages will be added to config, once complete
             for this_line in text:
                 if this_line.strip().endswith(",,"):  # Target cook data
                     line = this_line.split(',')
 
-                    # Obtain starting temperatures
+                    # Obtain starting temperatures.
                     if line[2] == "START":
                         config["start_temps"] = self._get_temps(line)
-                    # Obtain end time and temperatures
+                    # Obtain end time and temperatures.
                     elif line[2] == "END":
                         config["end_temps"] = self._get_temps(line)
                         config["end_time"] = "NotYetImplemented"
@@ -104,15 +110,14 @@ class OvenReader(object):
                         counter = clock
                         curr_stage += 1
 
-                # Obtain in and out weights
-                # TODO consolidate weight lookups into a function
+                # Obtain in and out weights.
                 elif this_line.startswith("In-weight:"):
-                    config["in_weight"] = int(line[line.index(': ') + 1:])
+                    config["in_weight"] = self._get_weight(line)
                 elif this_line.startswith("Out-weight:"):
-                    config["out_weight"] = int(line[line.index(': ') + 1:])
+                    config["out_weight"] = self._get_weight(line)
                 else:
                     config["in_weight"], config["out_weight"] = 1, -1
-            # Obtain stage data
+            # Obtain stage data.
             config["stages"] = stages
         return Cook(config)
 
@@ -125,7 +130,7 @@ class OvenReader(object):
             errors: Flat to control the output of errors (default=False).
         """
         # TODO Add flags to output comments | errors
-        # Output cook data
+        # Output cook data.
         print(f"\nFile: {cook.NAME}", end='')  # TODO Remove??
         print(self._wrapper("[Cook Info]", '='), end='')
         print(dd(f"""
@@ -143,7 +148,7 @@ class OvenReader(object):
         Duration: {cook.DURATION} minutes [{self._to_hours(cook.DURATION)}] \
         """), end='')
 
-        # Output stage data
+        # Output stage data.
         print(self._wrapper("[Stage Info]", '='))
 
         for stage, duration in cook.STAGES.items():
@@ -151,7 +156,7 @@ class OvenReader(object):
 
 
 if __name__ == "__main__":
-    # TODO Remove tests once complete
+    # TODO Remove tests once complete.
     test = OvenReader()
     print("\n***TESTING***")
     TEST_COOK = test.parse("..\\docs\\404E_PL123456L.txt")
