@@ -9,7 +9,7 @@ class Cook(object):
     [required] pre-configured dict argument.
 
     Args:
-        data: Configruation of attributes.
+        data: Configuration of attributes.
 
     Attributes:
         NAME (str): File name OF the cook.
