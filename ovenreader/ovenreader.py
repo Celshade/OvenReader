@@ -1,5 +1,4 @@
 """Read oven data from a .txt file and output critical data points."""
-import os
 from datetime import datetime as dt
 
 from cook import Cook
