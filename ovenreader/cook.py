@@ -1,9 +1,9 @@
 class Cook(object):
     """Maintain parsed cook data.
 
-    This object is intended to be used in conjunction with OvenReader() and
-    maintains unique cook data. Main attributes are specified in a
-    pre-configured dict.
+    This object maintains unique cook data and is intended to be used in
+    conjunction with OvenReader(). Main attributes are specified in a
+    [required] pre-configured dict argument.
 
     Args:
         data: Configruation of attributes.
@@ -40,8 +40,8 @@ class Cook(object):
         self.END_TIME = data["end_time"]
         self.END_TEMPS = data["end_temps"]
         self.STAGES = data["stages"]
-        # TODO self.COMMENTS = data["comments"]
-        # TODO self.ERRORS = data["errors"]
+        self.COMMENTS = data["comments"]
+        self.ERRORS = data["errors"]
         self.COOK_YIELD = self.OUT_WEIGHT / self.IN_WEIGHT
         self.DURATION = int(sum(self.STAGES.values()))
 
