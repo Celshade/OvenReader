@@ -1,7 +1,6 @@
 """Read oven data from a .txt file and output critical data points."""
 import os
 from datetime import datetime as dt
-from textwrap import dedent as dd
 
 from cook import Cook
 
@@ -30,7 +29,6 @@ class OvenReader(object):
         """
         chars = ('D', '', '\n')
         temps = [i for i in text[8:] if i not in chars]
-
         return temps
 
     def _get_weight(self, text: str) -> int:
@@ -41,23 +39,14 @@ class OvenReader(object):
         """
         return int(text[text.index(': ') + 1:])
 
-    def _to_hours(self, raw_minutes: int) -> str:
-        """Return a string representation of hours and minutes.
+    def parse(self, path: str) -> None:
+        """Parse the file and establish a configured Cook object.
 
-        Args:
-            raw_minutes: The number of minutes to represent.
-        """
-        hours, minutes = int(raw_minutes // 60), int(raw_minutes % 60)
-        return f"{hours} hr {minutes} min"
-
-    def parse(self, path: str) -> Cook:
-        """Parse the file and return a configured Cook object.
-
-        Parse critical data points from the raw text and encapsulate them into
+        Parse critical data points from raw text and encapsulate them into
         a Cook object.
 
         Args:
-            path: The text's filepath.
+            path: The file path to the text.
         """
         config = {}  # Cook attribute configuration
         # Obtain file name, product ID, and lot number.
@@ -105,59 +94,24 @@ class OvenReader(object):
                     config["in_weight"], config["out_weight"] = 1, -1
             # Obtain stage data.
             config["stages"] = stages
-        return Cook(config)
+            # TODO Parse Comments and Errors
+            config["comments"], config["errors"] = [], []
+        self._current_cook = Cook(config)
 
-    def _wrapper(self, header: str, border: str) -> str:
-        """Return a centered header, wrapped with a border.
-
-        Args:
-            header: The header to wrap.
-            border: The border symbol to wrap the header with.
-        """
-        wrap = border * 79
-        return dd(f"""
-        {wrap}
-        {header.center(79)}
-        {wrap}""")
-
-    def output(self, cook: Cook,
-               comments: bool=False, errors: bool=False) -> None:
-        """Return a formatted output of data points.
+    def output(self, comments: bool=False, errors: bool=False) -> None:
+        """Output formatted cook data for the current cook.
 
         Args:
             comments: Flag to control the output of comments (default=False).
             errors: Flat to control the output of errors (default=False).
         """
         # TODO Add flags to output comments | errors
-        # Output cook data.
-        print(f"\nFile: {cook.NAME}", end='')  # TODO Remove??
-        print(self._wrapper("[Cook Info]", '='), end='')
-        print(dd(f"""
-        Product: {cook.PRODUCT}
-        Lot: {cook.LOT}
-        Oven: {cook.OVEN}
-        In-weight: {cook.IN_WEIGHT}
-        Out-weight: {cook.OUT_WEIGHT}
-        Yield: NotYetImplemented
-        Program {cook.PROGRAM}
-        Start: {cook.START_TIME}
-        Starting Temps: {cook.START_TEMPS}
-        End: {cook.END_TIME}
-        Ending Temps: {cook.END_TEMPS}
-        Duration: {cook.DURATION} minutes [{self._to_hours(cook.DURATION)}] \
-        """), end='')
-
-        # Output stage data.
-        print(self._wrapper("[Stage Info]", '='))
-
-        for stage, duration in cook.STAGES.items():
-            print(f"{stage}: {int(duration)} minutes")
+        print(self._current_cook.compile_data(comments, errors))
 
 
 if __name__ == "__main__":
     # TODO Remove tests once complete.
-    test = OvenReader()
     print("\n***TESTING***")
-    TEST_COOK = test.parse("..\\docs\\404E_PL123456L.txt")
-    print("\nIt works")
-    test.output(TEST_COOK)
+    reader = OvenReader()
+    reader.parse("..\\docs\\404E_PL123456L.txt")
+    reader.output()
