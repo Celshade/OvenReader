@@ -34,9 +34,10 @@ class OvenReader(object):
         """Return the weight found within the given line of text.
 
         Args:
-            text: The string to iterate over and parse from.
+            text: The string to iterate over.
         """
-        return int(text[text.index(': ') + 1:])
+        start = text.index(':') + 1
+        return int(text[start:].strip())
 
     def parse(self, path: str) -> None:
         """Parse the file and establish a configured Cook object.
@@ -87,9 +88,9 @@ class OvenReader(object):
 
                 # Obtain in and out weights.
                 elif this_line.startswith("In-weight:"):
-                    config["in_weight"] = self._get_weight(line)
+                    config["in_weight"] = self._get_weight(this_line)
                 elif this_line.startswith("Out-weight:"):
-                    config["out_weight"] = self._get_weight(line)
+                    config["out_weight"] = self._get_weight(this_line)
                 else:
                     config["in_weight"], config["out_weight"] = 1, -1
             config["stages"] = stages
