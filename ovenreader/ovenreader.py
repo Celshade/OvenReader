@@ -66,7 +66,7 @@ class OvenReader(object):
             curr_stage = 1
             stages = {}  # Stages will be added to config, once complete
 
-            # Parse the main body.
+            # Iterate over the main text body.
             for this_line in text:
                 if this_line.strip().endswith(",,"):  # Target cook data
                     line = this_line.split(',')
@@ -103,7 +103,7 @@ class OvenReader(object):
 
         Args:
             comments: Flag to control the output of comments (default=False).
-            errors: Flat to control the output of errors (default=False).
+            errors: Flag to control the output of errors (default=False).
         """
         # TODO Add flags to output comments | errors
         print(self._current_cook.compile_data(comments, errors))
