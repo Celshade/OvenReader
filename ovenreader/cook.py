@@ -1,3 +1,10 @@
+"""Establish the Cook object.
+
+Intended to be imported and used by the OvenReader class.
+
+Classes:
+    Cook(object): An object that stores cook data.
+"""
 from textwrap import dedent as dd
 
 
@@ -76,9 +83,10 @@ class Cook(object):
         """Return a formatted string of data points.
 
         Args:
-            comments: Flag to control the output of comments (default=False).
-            errors: Flat to control the output of errors (default=False).
+            comments: Flag to control the output of comments.
+            errors: Flag to control the output of errors.
         """
+        # Compile cook data and stage info header.
         output = '\n'.join((
             (f"\nFile: {self.NAME}"),  # TODO Remove??
             (self._wrapper("[Cook Info]", '=')),
