@@ -39,6 +39,24 @@ class OvenReader(object):
         start = text.index(':') + 1
         return int(text[start:].strip())
 
+    def _get_stage(self, line: str, counter: dt, stage: int) -> tuple:
+        """Get current stage duration and update parsing counters.
+
+        This function is used when parsing the main text body to update stage
+        data.
+
+        Args:
+            line: The current line of text being parsed.
+            counter: The current stage counter in use.
+            stage: The current stage number.
+        Returns:
+            Return a tuple (stage_duration, new_counter, new_stage).
+        """
+        new_counter = dt.strptime(line[0], "%H:%M")
+        duration = (new_counter - counter).total_seconds() / 60
+        new_stage = stage + 1
+        return (duration, new_counter, new_stage)
+
     def parse(self, path: str) -> None:
         """Parse the file and establish a configured Cook object.
 
@@ -80,11 +98,8 @@ class OvenReader(object):
                         config["end_time"] = "NotYetImplemented"
                     # Obtain stage data.
                     elif int(line[2]) > curr_stage:
-                        clock = dt.strptime(line[0], "%H:%M")
-                        time = (clock - counter).total_seconds() / 60
-                        stages[f"Stage {curr_stage}"] = time
-                        counter = clock
-                        curr_stage += 1
+                        _ = self._get_stage(line, counter, curr_stage)
+                        stages[f"Stage {curr_stage}"], counter, curr_stage = _
 
                 # Obtain in and out weights.
                 elif this_line.startswith("In-weight:"):
