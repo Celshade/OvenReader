@@ -102,7 +102,7 @@ class Cook(object):
             Duration: {self.DURATION} minutes [{self._to_hours(self.DURATION)}]
             In-weight: {self.IN_WEIGHT}
             Out-weight: {self.OUT_WEIGHT}
-            Yield: NotYetImplemented
+            Yield: {self.COOK_YIELD}
             """)),
             (self._wrapper("[Stage Info]", '=')),
         ))

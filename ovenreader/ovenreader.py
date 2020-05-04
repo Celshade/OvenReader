@@ -92,10 +92,12 @@ class OvenReader(object):
                     # Obtain starting temperatures.
                     if line[2] == "START":
                         config["start_temps"] = self._get_temps(line)
-                    # Obtain end time and temperatures.
+                    # Obtain end times and temperatures.
                     elif line[2] == "END":
                         config["end_temps"] = self._get_temps(line)
                         config["end_time"] = "NotYetImplemented"
+                        end_dur = self._get_stage(line, counter, curr_stage)[0]
+                        stages[f"Stage {curr_stage}"] = end_dur
                     # Obtain stage data.
                     elif int(line[2]) > curr_stage:
                         _ = self._get_stage(line, counter, curr_stage)

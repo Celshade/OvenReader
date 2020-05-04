@@ -265,3 +265,5 @@ Oven:,Oven 5
 Oven: Oven 5,Date: 12/16/2019
 Test.co Report,11,of
 12/18/2019 10:10 AM,11
+In-weight: 10000
+Out-weight: 8900
