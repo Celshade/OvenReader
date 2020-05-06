@@ -27,7 +27,7 @@ class OvenReader(object):
             text: The text to parse.
         """
         chars = ('D', '', '\n')
-        temps = [i for i in text[8:] if i not in chars]
+        temps = [float(i) for i in text[8:] if i not in chars]
         return temps
 
     def _get_weight(self, text: str) -> int:

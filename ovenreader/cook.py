@@ -24,10 +24,10 @@ class Cook(object):
         LOT (str): Product lot number.
         OVEN (str): Oven ID.
         PROGRAM (str): Program name.
-        START_TIME (str): Cook start time.
-        START_TEMPS (tuple[float]): Starting temperatures.
-        END_TIME (str): Cook end time.
-        END_TEMPS (tuple[float]): Ending temperatures.
+        START_TIME (datetime): Cook start time.
+        START_TEMPS (list[float]): Starting temperatures.
+        END_TIME (datetime): Cook end time.
+        END_TEMPS (list[float]): Ending temperatures.
         STAGES (dict): Stage information.
         COMMENTS (list): Cook comments.
         ERRORS (list): Cook errors.
