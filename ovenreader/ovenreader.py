@@ -1,5 +1,6 @@
 """Read oven data from a .txt file and output critical data points."""
 from datetime import datetime as dt
+from datetime import timedelta as delta
 
 from cook import Cook
 
@@ -57,6 +58,16 @@ class OvenReader(object):
         new_stage = stage + 1
         return (duration, new_counter, new_stage)
 
+    def _get_end_time(self, start_time: dt, duration: int) -> dt:
+        """Return the ending date and time of a Cook object.
+
+        Args:
+            start_time: The starting date and time.
+            duration: The total duration of the cook (in minutes).
+        """
+        end_time = start_time + delta(minutes=duration)
+        return end_time
+
     def parse(self, path: str) -> None:
         """Parse the file and establish a configured Cook object.
 
@@ -82,7 +93,7 @@ class OvenReader(object):
             config["oven"] = text[2].split(',')[1][5:].strip()
             counter = dt.strptime("00:00", "%H:%M")
             curr_stage = 1
-            stages = {}  # Stages will be added to config, once complete
+            stages = {}  # Add to config once all stage data is gathered.
 
             # Iterate over the main text body.
             for this_line in text:
@@ -94,10 +105,9 @@ class OvenReader(object):
                         config["start_temps"] = self._get_temps(line)
                     # Obtain end times and temperatures.
                     elif line[2] == "END":
-                        config["end_temps"] = self._get_temps(line)
-                        config["end_time"] = "NotYetImplemented"
                         end_dur = self._get_stage(line, counter, curr_stage)[0]
                         stages[f"Stage {curr_stage}"] = end_dur
+                        config["end_temps"] = self._get_temps(line)
                     # Obtain stage data.
                     elif int(line[2]) > curr_stage:
                         _ = self._get_stage(line, counter, curr_stage)
@@ -113,6 +123,10 @@ class OvenReader(object):
             config["stages"] = stages
             # TODO Parse Comments and Errors
             config["comments"], config["errors"] = [], []
+
+        duration = int(sum(config["stages"].values()))
+        config["end_time"] = self._get_end_time(config["start_time"], duration)
+        config["duration"] = duration
         self._current_cook = Cook(config)
 
     def output(self, comments: bool=False, errors: bool=False) -> None:

@@ -12,14 +12,14 @@ class Cook(object):
     """Maintain parsed cook data.
 
     This object maintains unique cook data and is intended to be used in
-    conjunction with OvenReader(). Main attributes are specified in a
-    [required] pre-configured dict argument.
+    conjunction with an OvenReader object. Main attributes are specified in a
+    pre-configured dict.
 
     Args:
         data: Configuration of attributes.
 
     Attributes:
-        NAME (str): File name OF the cook.
+        NAME (str): File name of the cook.
         PRODUCT (str): Product ID.
         LOT (str): Product lot number.
         OVEN (str): Oven ID.
@@ -29,12 +29,12 @@ class Cook(object):
         END_TIME (datetime): Cook end time.
         END_TEMPS (list[float]): Ending temperatures.
         STAGES (dict): Stage information.
-        COMMENTS (list): Cook comments.
-        ERRORS (list): Cook errors.
+        COMMENTS (list[str]): Cook comments.
+        ERRORS (list[str]): Cook errors.
         IN_WEIGHT (int): Product in-weight.
         OUT_WEIGHT (int): Product out-weight.
         OVEN_YIELD (float): Product yield.
-        DURATION (str): Total duration of cook.
+        DURATION (int): Total duration of the cook (in minutes).
     Public Methods:
         compile_data(): Compile formatted data points.
     """
@@ -55,7 +55,7 @@ class Cook(object):
         self.IN_WEIGHT = data["in_weight"]
         self.OUT_WEIGHT = data["out_weight"]
         self.COOK_YIELD = self.OUT_WEIGHT / self.IN_WEIGHT
-        self.DURATION = int(sum(self.STAGES.values()))
+        self.DURATION = data["duration"]
 
     def _to_hours(self, raw_minutes: int) -> str:
         """Return a string representation of hours and minutes.
