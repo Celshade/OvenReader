@@ -88,7 +88,7 @@ class Cook(object):
         """
         # Compile cook data and stage info header.
         output = '\n'.join((
-            (f"\nFile: {self.NAME}"),  # TODO Remove??
+            (f"\nFile: {self.NAME}"),
             (self._wrapper("[Cook Info]", '=')),
             (dd(f"""
             Product: {self.PRODUCT}
@@ -102,12 +102,13 @@ class Cook(object):
             Duration: {self.DURATION} minutes [{self._to_hours(self.DURATION)}]
             In-weight: {self.IN_WEIGHT}
             Out-weight: {self.OUT_WEIGHT}
-            Yield: {self.COOK_YIELD}
+            Yield: {str(self.COOK_YIELD).strip("0.")}% \
             """)),
             (self._wrapper("[Stage Info]", '=')),
+            ('')  # Add a blank space between 'Stage Info' header and data
         ))
         # Compile stage data.
         for stage, duration in self.STAGES.items():
             output += f"\n{stage}: {int(duration)} minutes"
         # TODO Implement comments and error output
-        return output
+        return output + '\n'

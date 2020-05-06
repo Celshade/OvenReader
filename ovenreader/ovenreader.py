@@ -86,14 +86,14 @@ class OvenReader(object):
         with open(path, 'r') as f:
             text = f.readlines()
             # Obtain program, start time, and oven number.
-            header = text[1].split(',')  # Isolate the report header.
+            header = text[1].split(',')  # Isolate the report header
             config["program"] = header[1]
             start_info = header[3].replace('/', '-').strip()
             config["start_time"] = dt.strptime(start_info, "%m-%d-%Y %H:%M:%S")
             config["oven"] = text[2].split(',')[1][5:].strip()
             counter = dt.strptime("00:00", "%H:%M")
             curr_stage = 1
-            stages = {}  # Add to config once all stage data is gathered.
+            stages = {}  # Add to config once all stage data is gathered
 
             # Iterate over the main text body.
             for this_line in text:
@@ -121,13 +121,14 @@ class OvenReader(object):
                 else:
                     config["in_weight"], config["out_weight"] = 1, -1
             config["stages"] = stages
-            # TODO Parse Comments and Errors
+            # TODO Parse Comments and Errors.
             config["comments"], config["errors"] = [], []
 
+        # Calculate Cook duration and ending date/time.
         duration = int(sum(config["stages"].values()))
         config["end_time"] = self._get_end_time(config["start_time"], duration)
         config["duration"] = duration
-        self._current_cook = Cook(config)
+        self._current_cook = Cook(config)  # Create the Cook object
 
     def output(self, comments: bool=False, errors: bool=False) -> None:
         """Output formatted cook data for the current cook.
@@ -136,13 +137,10 @@ class OvenReader(object):
             comments: Flag to control the output of comments (default=False).
             errors: Flag to control the output of errors (default=False).
         """
-        # TODO Add flags to output comments | errors
         print(self._current_cook.compile_data(comments, errors))
 
 
 if __name__ == "__main__":
-    # TODO Remove tests once complete.
-    print("\n***TESTING***")
     reader = OvenReader()
     reader.parse("..\\docs\\404E_PL123456L.txt")
     reader.output()
