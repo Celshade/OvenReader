@@ -20,7 +20,7 @@ class OvenReader(object):
         self._current_cook = None
 
     def _get_temps(self, text: str) -> list:
-        """Return a list of strings containing relevant temperatures.
+        """Return a list of temperatures as floats.
 
         Iterate over a string and ignore invalid characters.
 
@@ -59,7 +59,7 @@ class OvenReader(object):
         return (duration, new_counter, new_stage)
 
     def _get_end_time(self, start_time: dt, duration: int) -> dt:
-        """Return the ending date and time of a Cook object.
+        """Return the ending date and time of the cook.
 
         Args:
             start_time: The starting date and time.
@@ -69,13 +69,13 @@ class OvenReader(object):
         return end_time
 
     def parse(self, path: str) -> None:
-        """Parse the file and establish a configured Cook object.
+        """Parse the file and instantiate a configured Cook object.
 
         Parse critical data points from raw text and encapsulate them into
         a Cook object.
 
         Args:
-            path: The file path to the text.
+            path: The file path to the cook data.
         """
         config = {}  # Cook attribute configuration
         # Obtain filename, product, and lot.
@@ -103,7 +103,7 @@ class OvenReader(object):
                     # Obtain starting temperatures.
                     if line[2] == "START":
                         config["start_temps"] = self._get_temps(line)
-                    # Obtain end times and temperatures.
+                    # Obtain final stage duration and ending temperatures.
                     elif line[2] == "END":
                         end_dur = self._get_stage(line, counter, curr_stage)[0]
                         stages[f"Stage {curr_stage}"] = end_dur
@@ -130,7 +130,7 @@ class OvenReader(object):
         config["duration"] = duration
         self._current_cook = Cook(config)  # Create the Cook object
 
-    def output(self, comments: bool=False, errors: bool=False) -> None:
+    def output(self, comments: bool = False, errors: bool = False) -> None:
         """Output formatted cook data for the current cook.
 
         Args:
