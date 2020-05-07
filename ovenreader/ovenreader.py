@@ -1,4 +1,12 @@
-"""Read oven data from a .txt file and output critical data points."""
+"""Establish a parser for cook data.
+
+Read oven data from a .txt file and output critical data points.
+
+Classes:
+    OvenReader(object): Parser built to instantiate Cook objects.
+Functions:
+    Main(): Run the program.
+"""
 from datetime import datetime as dt
 from datetime import timedelta as delta
 
@@ -140,7 +148,19 @@ class OvenReader(object):
         print(self._current_cook.compile_data(comments, errors))
 
 
+def main() -> None:
+    """Prompt for user input and run the program.
+    
+    User may specify a file or folder location. If a folder is specified, all
+    data files found within will be parsed and output to the screen.
+    """
+    # TODO Implement
+    raise NotImplementedError
+
+
 if __name__ == "__main__":
+    # main()  # TODO Implement
+    # TODO Remove tests
     reader = OvenReader()
     reader.parse("..\\docs\\404E_PL123456L.txt")
     reader.output()
