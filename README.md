@@ -13,8 +13,7 @@ OvenRreader parses these reports, creates a Cook object which encapsulates
 the unique data relevant to that specific cook, and finally outputs a formatted
 visual of the critical data points for easy viewing.
 
-**Disclaimer**
-
+**\*\*Disclaimer\*\*** \
 This project was built for parsing very specific data which is organized in
 uniquely formatted text files. This format may not be universal, and the
 program may need to be tuned accordingly for anyone using this code in their
@@ -33,10 +32,15 @@ _Some older versions of python may work, but this has not been tested._
 
 ## Instructions
 This program is intended to be run in the CLI. Simply download the package, and
-run **_ovenreader.py_** from the package directory to start the program.
+run <**_py ovenreader.py_**> from the package directory to start the program.
+
+**\*\*NOTE\*\*** \
+_Users may need to run <**_python ovenreader.py_**> depending on their setup._
 ***
 
-Found a bug or care to drop some feedback? See the link below!
+For the most recent developments, please see branch [DEV](https://github.com/Celshade/OvenReader/tree/dev).
+
+Found a bug or care to drop some feedback? See the link below! \
 _Comments & bugs -> https://www.github.com/Celshade/OvenReader/issues_
 
 Peace
