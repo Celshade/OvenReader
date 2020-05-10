@@ -173,18 +173,24 @@ class OvenReader(object):
 
 
 def main() -> None:
-    """Prompt for user input and run the program.
+    """Prompt for user input and run the program."""
+    print("\nWelcome to OvenReader!\n")
+    reader = OvenReader()
+    running = True
 
-    User may specify a file or folder location. If a folder is specified, all
-    data files found within will be parsed and output to the screen.
-    """
-    # TODO Implement
-    raise NotImplementedError
+    while running:
+        user_input = input("Enter a valid file path or [Q] to quit: ")
+
+        if user_input.lower() == 'q':
+            print("Session terminated.")
+            running = False
+        else:
+            try:
+                reader.parse(user_input)
+                reader.output()
+            except ValueError:
+                print("Incorrect file path")
 
 
 if __name__ == "__main__":
-    # main()  # TODO Implement
-    # TODO Remove tests
-    reader = OvenReader()
-    reader.parse("..\\docs\\404E_PL123456L.txt")
-    reader.output()
+    main()
