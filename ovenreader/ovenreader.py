@@ -9,6 +9,7 @@ Functions:
 """
 from datetime import datetime as dt
 from datetime import timedelta as delta
+from typing import Union
 
 from cook import Cook
 
@@ -39,15 +40,6 @@ class OvenReader(object):
         temps = [float(i) for i in text[8:] if i not in chars]
         return temps
 
-    def _get_weight(self, text: str) -> int:
-        """Return the weight found within the given line of text.
-
-        Args:
-            text: The string to iterate over.
-        """
-        start = text.index(':') + 1
-        return int(text[start:].strip())
-
     def _get_stage(self, line: str, counter: dt, stage: int) -> tuple:
         """Get current stage duration and update parsing counters.
 
@@ -65,6 +57,35 @@ class OvenReader(object):
         duration = (new_counter - counter).total_seconds() / 60
         new_stage = stage + 1
         return (duration, new_counter, new_stage)
+
+    def _get_weight(self, text: str) -> int:
+        """Return the weight found within the given line of text.
+
+        Args:
+            text: The string to iterate over.
+        """
+        start = text.index(':') + 1
+        weight = text[start:].strip()
+
+        if weight.isdigit():
+            return int(weight)
+        else:
+            return -1
+
+    def _get_yield(self, in_weight: int, out_weight: int) -> Union[int, float]:
+        """Return the Cook yield.
+
+        Args:
+            in_weight: The in_weight of the cook.
+            out_weight: The out_weight of the cook.
+        Returns:
+            Return -1 if either the in | out weight is not specified (-1), else
+            return the true cook yield.
+        """
+        if in_weight != -1 and out_weight != -1:
+            return out_weight / in_weight
+        else:
+            return -1
 
     def _get_end_time(self, start_time: dt, duration: int) -> dt:
         """Return the ending date and time of the cook.
@@ -127,15 +148,18 @@ class OvenReader(object):
                 elif this_line.startswith("Out-weight:"):
                     config["out_weight"] = self._get_weight(this_line)
                 else:
-                    config["in_weight"], config["out_weight"] = 1, -1
-            config["stages"] = stages
-            # TODO Parse Comments and Errors.
+                    config["in_weight"], config["out_weight"] = -1, -1
+
+                # TODO Parse Comments and Errors.
             config["comments"], config["errors"] = [], []
 
-        # Calculate Cook duration and ending date/time.
-        duration = int(sum(config["stages"].values()))
-        config["end_time"] = self._get_end_time(config["start_time"], duration)
+        # Configure the final Cook attributes.
+        config["stages"] = stages
+        duration = int(sum(stages.values()))
         config["duration"] = duration
+        config["end_time"] = self._get_end_time(config["start_time"], duration)
+        _yield = self._get_yield(config["in_weight"], config["out_weight"])
+        config["cook_yield"] = _yield
         self._current_cook = Cook(config)  # Create the Cook object
 
     def output(self, comments: bool = False, errors: bool = False) -> None:
@@ -150,7 +174,7 @@ class OvenReader(object):
 
 def main() -> None:
     """Prompt for user input and run the program.
-    
+
     User may specify a file or folder location. If a folder is specified, all
     data files found within will be parsed and output to the screen.
     """
