@@ -32,10 +32,11 @@ _Some older versions of python may work, but this has not been tested._
 
 ## Instructions
 This program is intended to be run in the CLI. Simply download the package, and
-run <**_py ovenreader.py_**> from the package directory to start the program.
+run `py .\src\ovenreader.py` from the package directory to start the
+program.
 
 **\*\*NOTE\*\*** \
-_Users may need to run <**_python ovenreader.py_**> depending on their setup._
+_Users may need to run `python .\src\ovenreader.py` depending on their setup._
 ***
 
 For the most recent developments, please see branch [DEV](https://github.com/Celshade/OvenReader/tree/dev).
