@@ -188,7 +188,7 @@ def main() -> None:
             try:
                 reader.parse(user_input)
                 reader.output()
-            except ValueError:
+            except (ValueError, FileNotFoundError):
                 print("Incorrect file path")
 
 

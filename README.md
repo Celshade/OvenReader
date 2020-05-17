@@ -20,7 +20,7 @@ program may need to be tuned accordingly for anyone using this code in their
 own projects.
 
 For the sake of privacy and compliance, all names and product information used
-in the example data file **_\docs\404E_PL123456L.txt_** (report titles, program
+in the example data file **_.\docs\404E_PL123456L.txt_** (report titles, program
 names, employee names, product names, and lot numbers) are fictitious.
 ***
 
@@ -31,9 +31,15 @@ _Some older versions of python may work, but this has not been tested._
 ***
 
 ## Instructions
-This program is intended to be run in the CLI. Simply download the package, and
-run `py .\src\ovenreader.py` from the package directory to start the
-program.
+This program was built for the CLI. Simply download the package, and
+run `py .\src\ovenreader.py` (from the package directory) to start the
+program. The example file can be used for testing purposes, as follows:
+
+(The **.\\** can be omitted if you're working from the package directory.) \
+`py .\src\ovenreader.py` \
+(At the prompt...) \
+`.\docs\404E_PL123456L.txt`
+
 
 **\*\*NOTE\*\*** \
 _Users may need to run `python .\src\ovenreader.py` depending on their setup._
