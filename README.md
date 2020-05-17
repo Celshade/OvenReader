@@ -20,7 +20,7 @@ program may need to be tuned accordingly for anyone using this code in their
 own projects.
 
 For the sake of privacy and compliance, all names and product information used
-in the example data file **_.\docs\404E_PL123456L.txt_** (report titles, program
+in the example data **_.\docs\404E_PL123456L.txt_** (report titles, program
 names, employee names, product names, and lot numbers) are fictitious.
 ***
 
