@@ -90,10 +90,7 @@ class Cook(object):
         Args:
             value: The configuration value.
         """
-        if value != -1:
-            return value
-        else:
-            return "NA"
+        return value if value != -1 else "NA"
 
     def compile_data(self, comments: bool, errors: bool) -> str:
         """Return a formatted string of data points.
