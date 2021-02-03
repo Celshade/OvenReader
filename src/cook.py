@@ -58,7 +58,7 @@ class Cook(object):
         self.OUT_WEIGHT = data["out_weight"]
         self.COOK_YIELD = data["cook_yield"]
 
-    def _wrapper(self, header: str, border: str) -> str:
+    def _wrapper(self, header: str, border: str='=') -> str:
         """Return a centered header, wrapped with a border.
 
         Args:
@@ -104,8 +104,8 @@ class Cook(object):
         """
         # Compile cook data and stage info header.
         output = '\n'.join((
-            (f"\nFile: {self.NAME}"),
-            (self._wrapper("[Cook Info]", '=')),
+            ('\n' + f"File: {self.NAME}".center(79)),
+            (self._wrapper("[Cook Info]")),
             (dd(f"""
             Product: {self.PRODUCT}
             Lot: {self.LOT}

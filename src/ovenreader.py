@@ -162,7 +162,7 @@ class OvenReader(object):
         config["cook_yield"] = _yield
         self._current_cook = Cook(config)  # Create the Cook object
 
-    def output(self, comments: bool = False, errors: bool = False) -> None:
+    def output(self, comments: bool=False, errors: bool=False) -> None:
         """Output formatted cook data for the current cook.
 
         Args:
@@ -176,8 +176,8 @@ def main() -> None:
     """Prompt for user input and run the program."""
     print("\nWelcome to OvenReader!\n")
     reader = OvenReader()
-    running = True
 
+    running = True
     while running:
         user_input = input("Enter a valid file path or [Q] to quit: ")
 
