@@ -58,7 +58,7 @@ class Cook(object):
         self.OUT_WEIGHT = data["out_weight"]
         self.COOK_YIELD = data["cook_yield"]
 
-    def _wrapper(self, header: str, border: str='=') -> str:
+    def _wrapper(self, header: str, border: str = '=') -> str:
         """Return a centered header, wrapped with a border.
 
         Args:
